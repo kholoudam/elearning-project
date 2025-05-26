@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <link href="{{ asset('img/logo.png') }}" rel="icon">
+        <title>E-LEARNING</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand" style="background-color: rgba(24, 56, 24, 0.7); color: #fff;">
+            <!-- Navbar Brand-->
+            <a href="{{ route('index') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+                <img class="img-fluid" src="{{ asset('img/logo.png') }}" style="width:50px;height:50px;" alt="">
+            </a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-dark btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-dark" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ route('profile') }}">Afficher Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Modifier Profile</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout.perform') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-danger" style="background-color: #dc3545; border: none;">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="{{ route('admin.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Interface</div>
+                            {{-- Menu cours --}}
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCours" aria-expanded="false" aria-controls="collapseCours">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Cours
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseCours" aria-labelledby="headingCours" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('coursa.index') }}">Liste des cours</a>
+                                    <a class="nav-link" href="{{ route('coursa.create') }}">Ajouter un cours</a>
+                                </nav>
+                            </div>
+                            {{-- Menu utilisateurs --}}
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUtilisateurs" aria-expanded="false" aria-controls="collapseUtilisateurs">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Utilisateurs
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseUtilisateurs" aria-labelledby="headingUtilisateurs" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('utilisateurs.index') }}">Liste des utilisateurs</a>
+                                    <a class="nav-link" href="{{ route('utilisateurs.create') }}">Ajouter un utilisateur</a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container">
+                        <h2>Ajouter un nouvel utilisateur</h2>
+
+                        @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('utilisateurs.store') }}" method="POST">
+                            @csrf
+
+                            <div class="mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" value="{{ old('nom') }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Adresse e-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Rôle</label>
+                                <select class="form-control" id="role" name="role" required>
+                                    <option value="">-- Sélectionner un rôle --</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="enseignant" {{ old('role') == 'enseignant' ? 'selected' : '' }}>Enseignant</option>
+                                    <option value="etudiant" {{ old('role') == 'etudiant' ? 'selected' : '' }}>Etudiant</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="mot_de_passe" name="mot_de_passe" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Ajouter l'utilisateur</button>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/scripts.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('assets/demo/chart-area-demo.js') }}"></script>
+        <script src="{{ asset('assets/demo/chart-bar-demo.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
+    </body>
+</html>

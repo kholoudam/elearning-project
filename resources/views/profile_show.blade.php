@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link href="{{ asset('img/logo.png') }}" rel="icon">
+    <title>Dashboard - SB Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+    @auth
+        @if(auth()->user()->role === 'admin')
+            {{-- NAVBAR ADMIN --}}
+            <nav class="sb-topnav navbar navbar-expand" style="background-color: rgba(24, 56, 24, 0.7); color: #fff;">
+                <!-- Navbar Brand-->
+                <a href="{{ route('index') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+                    <img class="img-fluid" src="{{ asset('img/logo.png') }}" style="width:50px;height:50px;" alt="">
+                </a>
+                <!-- Sidebar Toggle-->
+                <button class="btn btn-dark btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+                <!-- Navbar Search-->
+                <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                        <button class="btn btn-dark" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+                <!-- Navbar-->
+                <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}">Afficher Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Modifier Profile</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout.perform') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger" style="background-color: #dc3545; border: none;">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div id="layoutSidenav">
+                <div id="layoutSidenav_nav">
+                    <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+                        <div class="sb-sidenav-menu">
+                            <div class="nav">
+                                <div class="sb-sidenav-menu-heading">Core</div>
+                                <a class="nav-link" href="{{ route('admin.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                                <div class="sb-sidenav-menu-heading">Interface</div>
+                                {{-- Menu cours --}}
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCours" aria-expanded="false" aria-controls="collapseCours">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    Cours
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseCours" aria-labelledby="headingCours" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('coursa.index') }}">Liste des cours</a>
+                                        <a class="nav-link" href="{{ route('coursa.create') }}">Ajouter un cours</a>
+                                    </nav>
+                                </div>
+                                {{-- Menu utilisateurs --}}
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUtilisateurs" aria-expanded="false" aria-controls="collapseUtilisateurs">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    Utilisateurs
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseUtilisateurs" aria-labelledby="headingUtilisateurs" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('utilisateurs.index') }}">Liste des utilisateurs</a>
+                                        <a class="nav-link" href="{{ route('utilisateurs.create') }}">Ajouter un utilisateur</a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Profile</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active">Mon profile</li>
+                            </ol>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="card mt-4">
+                                            <div class="card-body">
+                                                <p><strong>Nom :</strong> {{ $user->nom }}</p>
+                                                <p><strong>Email :</strong> {{ $user->email }}</p>
+                                                <p><strong>Rôle :</strong> {{ ucfirst($user->role) }}</p>
+                                            </div>
+                                        </div>
+                                        <a href="{{ route('logout.perform') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"  class="btn btn-danger mt-3">
+                                            Se déconnecter
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    
+                </div>
+            </div>
+        @elseif(auth()->user()->role === 'enseignant')
+            {{-- NAVBAR ENSEIGNANT --}}
+            <nav class="sb-topnav navbar navbar-expand" style="background-color: rgba(24, 56, 24, 0.7); color: #fff;">
+                <!-- Navbar Brand-->
+                <a href="{{ route('index') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+                    <img class="img-fluid" src="{{ asset('img/logo.png') }}" style="width:50px;height:50px;" alt="">
+                </a>
+                <!-- Sidebar Toggle-->
+                <button class="btn btn-dark btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+                <!-- Navbar Search-->
+                <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                        <button class="btn btn-dark" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+                <!-- Navbar-->
+                <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}">Afficher Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Modifier Profile</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout.perform') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger" style="background-color: #dc3545; border: none;">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div id="layoutSidenav">
+                <div id="layoutSidenav_nav">
+                    <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+                        <div class="sb-sidenav-menu">
+                            <div class="nav">
+                                <div class="sb-sidenav-menu-heading">Core</div>
+                                <a class="nav-link" href=".{{ route('enseignants.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                                <div class="sb-sidenav-menu-heading">Interface</div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    cours
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('cours.index') }}">Liste des cours</a>
+                                        <a class="nav-link" href="{{ route('cours.create') }}">Ajouter un cours</a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div id="layoutSidenav_content">
+                        <main>
+                        <div class="container-fluid px-4">
+                            <h1 class="mt-4">Profile</h1>
+                            <ol class="breadcrumb mb-4">
+                                <li class="breadcrumb-item active">Mon profile</li>
+                            </ol>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="card mt-4">
+                                            <div class="card-body">
+                                                <p><strong>Nom :</strong> {{ $user->nom }}</p>
+                                                <p><strong>Email :</strong> {{ $user->email }}</p>
+                                                <p><strong>Rôle :</strong> {{ ucfirst($user->role) }}</p>
+                                            </div>
+                                        </div>
+                                        <a href="{{ route('logout.perform') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"  class="btn btn-danger mt-3">
+                                            Se déconnecter
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        @elseif(auth()->user()->role === 'etudiant')
+            {{-- NAVBAR ÉTUDIANT --}}
+            <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+                <a href="{{ route('index') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+                    <img class="img-fluid" src="{{ asset('img/logo.png') }}" style="width:70px;height:70px;" alt="">
+                </a>
+                <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto p-4 p-lg-0">
+                        <a href="{{ route('index') }}" class="nav-item nav-link">Home</a>
+                        <a href="{{ route('about') }}" class="nav-item nav-link">About</a>
+                        <a href="{{ route('courses.index') }}" class="nav-item nav-link">Courses</a>
+                        <a href="{{ route('team') }}" class="nav-item nav-link">Our Team</a>
+                        <a href="{{ route('testimonial') }}" class="nav-item nav-link">Testimonial</a>
+                        <a href="{{ route('contact') }}" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <a href="{{ route('profile') }}" class="btn py-4 px-lg-5 d-none d-lg-block" style="background-color: rgba(24, 56, 24, 0.7); color: #fff;">
+                        Profile <i class="fa fa-user ms-3"></i>
+                    </a>
+                </div>
+            </nav>
+
+            {{-- CONTENU ÉTUDIANT --}}
+            <div class="container-fluid px-4 mt-4">
+                <h1 class="mt-4">Mon Profil Étudiant</h1>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p><strong>Nom :</strong> {{ $user->nom }}</p>
+                        <p><strong>Email :</strong> {{ $user->email }}</p>
+                        <p><strong>Rôle :</strong> {{ ucfirst($user->role) }}</p>
+
+                        <hr>
+                        <h3>Mes Certificats</h3>
+                        <ul>
+                            @foreach(
+                                App\Models\Certificat::with('cours')
+                                    ->where('utilisateur_id', auth()->id())
+                                    ->get() as $certificat)
+                                <li>
+                                    Cours : <strong>{{ $certificat->cours->titre ?? 'Inconnu' }}</strong> —
+                                    Obtenu le :
+                                    {{ \Carbon\Carbon::parse($certificat->date_obtention)->format('d/m/Y') }}
+                                    —
+                                    <a href="{{ asset($certificat->image_path) }}"
+                                       target="_blank"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Voir le certificat
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <a href="{{ route('logout.perform') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger mt-3">
+                            Se déconnecter
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endauth
+
+    {{-- JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/demo/chart-area-demo.js') }}"></script>
+    <script src="{{ asset('assets/demo/chart-bar-demo.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
+</body>
+</html>
