@@ -134,9 +134,8 @@
                                         <label for="role" class="form-label">Rôle</label>
                                         <select class="form-control" id="role" name="role" required>
                                             <option value="admin" {{ old('role', $utilisateur->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                            <option value="technicien" {{ old('role', $utilisateur->role) == 'technicien' ? 'selected' : '' }}>Technicien</option>
-                                            <option value="assistant" {{ old('role', $utilisateur->role) == 'assistant' ? 'selected' : '' }}>Assistant</option>
-                                            <option value="demandeur" {{ old('role', $utilisateur->role) == 'demandeur' ? 'selected' : '' }}>Demandeur</option>
+                                            <option value="enseignant" {{ old('role', $utilisateur->role) == 'enseignant' ? 'selected' : '' }}>Enseignant</option>
+                                            <option value="etudiant" {{ old('role', $utilisateur->role) == 'etudiant' ? 'selected' : '' }}>Etudiant</option>
                                         </select>
                                     </div>
 
