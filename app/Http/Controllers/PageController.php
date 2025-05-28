@@ -10,16 +10,12 @@ class PageController extends Controller
     public function index(Request $request)
     {
         $categorie = $request->query('categorie');
-
         if ($categorie) {
             $cours = Cours::where('categorie', $categorie)->paginate(6);
         } else {
             $cours = Cours::paginate(6);
         }
-
-        // Pour récupérer toutes les catégories distinctes (optionnel pour le menu)
         $categories = Cours::select('categorie')->distinct()->get();
-
         return view('index', compact('cours', 'categories', 'categorie'));
     }
     public function login()

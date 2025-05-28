@@ -17,7 +17,6 @@ class StatsController extends Controller
         $total_etudiants   = Utilisateur::where('role', 'etudiant')->count();
         return view('admin.index', compact('total_cours', 'total_enseignants', 'total_etudiants'));
     }
-
     public function enseignantStats(Request $request)
     {
         $user = auth()->user();

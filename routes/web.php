@@ -24,15 +24,10 @@ Route::get('/register', [PageController::class, 'register'])->name('register');
 Route::post('/register', [LoginController::class, 'register'])->name('register.perform');
 Route::middleware('auth')->group(function () {
     Route::post('/cours/{cours}/inscrire', [CoursController::class, 'inscrire'])->name('cours.inscrire');
-    // 1. Affichage en lecture seule
     Route::get('/profile',        [LoginController::class, 'Profile'])->name('profile');
-    // 2. Formulaire de modification
     Route::get('/profile/edit',   [LoginController::class, 'showProfile'])->name('profile.edit');
-    // 3. Traitement de la mise à jour
     Route::put('/profile',        [LoginController::class, 'updateProfile'])->name('profile.update');
 });
-// Route::get('/cours/{id}/etudiant', [CoursController::class, 'voirCours'])->name('cours.etudiant');
-// Route::post('/cours/{id}/quiz', [CoursController::class, 'soumettreQuiz'])->name('cours.quiz');
 Route::get('/certificat/{cours_id}/generer', [CoursController::class, 'genererCertificat'])->name('certificat.generer');
 Route::get('/cours/{id}/apprendre', [CoursController::class, 'apprendre'])->name('cours.apprendre');
 Route::post('/cours/{id}/quiz', [CoursController::class, 'validerQuiz'])->name('cours.quiz');

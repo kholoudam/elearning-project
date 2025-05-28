@@ -12,22 +12,21 @@ class EnseignantController extends Controller
     /**
      * Display a listing of the resource.
      */
-        public function index(Request $request)
-        {
-            $categorie = $request->query('categorie');
-            if ($categorie) {
-                $cours = Cours::where('categorie', $categorie)->paginate(2);
-            } else {
-                $cours = Cours::paginate(3);
-            }
-            // Pour récupérer toutes les catégories distinctes (optionnel pour le menu)
-            $categories = Cours::select('categorie')->distinct()->get();
-            $user = auth()->user();
-            $coursIds = Cours::where('enseignant_id', $user->id)->pluck('id');
-            $mes_cours = $coursIds->count();
-            $mes_etudiants = Inscription::whereIn('cours_id', $coursIds)->distinct('utilisateur_id')->count();
-            return view('enseignants.index', compact('cours', 'categories', 'categorie', 'mes_cours', 'mes_etudiants'));
+    public function index(Request $request)
+    {
+        $categorie = $request->query('categorie');
+        if ($categorie) {
+            $cours = Cours::where('categorie', $categorie)->paginate(2);
+        } else {
+            $cours = Cours::paginate(3);
         }
+        $categories = Cours::select('categorie')->distinct()->get();
+        $user = auth()->user();
+        $coursIds = Cours::where('enseignant_id', $user->id)->pluck('id');
+        $mes_cours = $coursIds->count();
+        $mes_etudiants = Inscription::whereIn('cours_id', $coursIds)->distinct('utilisateur_id')->count();
+        return view('enseignants.index', compact('cours', 'categories', 'categorie', 'mes_cours', 'mes_etudiants'));
+    }
 
     /**
      * Show the form for creating a new resource.
